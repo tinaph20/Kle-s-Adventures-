@@ -32,7 +32,7 @@ public class EnemyManager : MonoBehaviour
             go = Instantiate(enemyPrefab, transform);
         }
         //Todo: how could we alter this so enemies always spawn around the player?
-        go.transform.position = new Vector3(Random.Range(-8, 8), Random.Range(-8, 8));
+        go.transform.position = new Vector3(Random.Range(-8, -8), Random.Range(-8, 8));
         return go;
     }
 
