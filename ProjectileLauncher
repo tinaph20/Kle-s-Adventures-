@@ -5,18 +5,44 @@ using UnityEngine;
 public class ProjectileLauncher : MonoBehaviour {
 
 	public Transform LaunchPoint;
-	public GameObject Fireball1Prefab;
+	public int damage = 20;
+	public GameObject impactEffect;
+	public LineRenderer lineRenderer;
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetButtonDown("Fire1"))
 		{
-			Shoot();
+			StartCoroutine(Shoot());
 		}
 	}
 
-	void Shoot ()
+	IEnumerator Shoot ()
 	{
-		Instantiate(Fireball1Prefab, LaunchPoint.position, LaunchPoint.rotation);
+		RaycastHit2D hitInfo = Physics2D.Raycast(LaunchPoint.position, LaunchPoint.right);
+
+		if (hitInfo)
+		{
+			Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+			if (enemy != null)
+			{
+				enemy.TakeDamage(damage);
+			}
+
+			Instantiate(impactEffect, hitInfo.point, Quaternion.identity);
+
+			lineRenderer.SetPosition(0, LaunchPoint.position);
+			lineRenderer.SetPosition(1, hitInfo.point);
+		} else
+		{
+			lineRenderer.SetPosition(0, LaunchPoint.position);
+			lineRenderer.SetPosition(1, LaunchPoint.position + LaunchPoint.right * 100);
+		}
+
+		lineRenderer.enabled = true;
+
+		yield return 0;
+
+		lineRenderer.enabled = false;
 	}
 }
